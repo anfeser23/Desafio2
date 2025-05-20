@@ -13,7 +13,7 @@ int main() {
     // Guardar en archivos
     guardarHuespedesEnArchivo();
     guardarAnfitrionesEnArchivo();
-    guardarAlojamientosEnArchivo();
+    //guardarAlojamientosEnArchivo();
     guardarReservasEnArchivo();
 
     mostrarConsumo();
