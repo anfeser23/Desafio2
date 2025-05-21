@@ -1,5 +1,5 @@
 #include "funciones.h"
-#include <iostream>
+//#include <iostream>
 
 int main() {
     // Cargar desde archivos
@@ -11,10 +11,10 @@ int main() {
     menuPrincipal();
 
     // Guardar en archivos
-    guardarHuespedesEnArchivo();
-    guardarAnfitrionesEnArchivo();
+    //guardarHuespedesEnArchivo();
+    //guardarAnfitrionesEnArchivo();
     //guardarAlojamientosEnArchivo();
-    guardarReservasEnArchivo();
+    //guardarReservasEnArchivo();
 
     mostrarConsumo();
     return 0;

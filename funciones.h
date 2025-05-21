@@ -127,6 +127,7 @@ private:
     char documentoHuesped[20];
     char fechaEntrada[11];
     int duracion;
+    char estado[10];
     float monto;
     char metodoPago[10];
     char fechaPago[11];
@@ -146,6 +147,9 @@ public:
     float getMonto() const;
     const char* getAnotaciones() const;
     const char* getDocumentoAnfitrion();
+    const char* getEstado() const;
+    void setEstado(const char* nuevoEstado);
+
 };
 
 // Funciones auxiliares
