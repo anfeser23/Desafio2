@@ -17,6 +17,23 @@ class Anfitrion;
 class Alojamiento;
 class Reservacion;
 
+// Manejo memoria dinamica
+
+extern Huesped* huespedes;
+extern int totalHuespedes, capacidadHuespedes;
+
+extern Anfitrion* anfitriones;
+extern int totalAnfitriones, capacidadAnfitriones;
+
+extern Alojamiento* alojamientos;
+extern int totalAlojamientos, capacidadAlojamientos;
+
+extern Reservacion* reservaciones;
+extern int totalReservas, capacidadReservas;
+
+void liberarMemoria();
+
+
 struct Amenidades {
     bool ascensor;
     bool piscina;
@@ -152,7 +169,8 @@ public:
 
 };
 
-// Funciones auxiliares
+// Funciones
+
 Huesped* buscarHuespedPorDocumento(const char* doc);
 Anfitrion* buscarAnfitrionPorDocumento(const char* doc);
 Alojamiento* buscarAlojamientoPorCodigo(int codigo);
@@ -175,8 +193,13 @@ void guardarAlojamientosEnArchivo();
 void guardarReservasEnArchivo();
 void menuPrincipal();
 bool convertirFecha(const char* , tm& );
+void asegurarCapacidadHuespedes();
+void asegurarCapacidadAnfitriones();
+void asegurarCapacidadAlojamientos();
+void asegurarCapacidadReservaciones();
 
 // Funciones para reserva según filtros
+
 void buscarAlojamientosPorFiltros(const char* fechaEntrada, const char* municipio, int duracion, float precioMaximo, float puntuacionMinima);
 void buscarAlojamientosPorCodigo(int codigo);
 void reservarAlojamientoPorCodigo(int, const char* , int );
@@ -185,5 +208,5 @@ void realizarReservaPorCodigo(const char* );
 void reservarAlojamientoPorCodigo(int , const char* , int , const char* );
 void buscarAlojamientosPorFiltros(const char* , const char* , int , float);
 bool codigoReservaExiste(int );
-
+bool estaAlojamientoReservadoEnArchivo(int , const char* );
 #endif
