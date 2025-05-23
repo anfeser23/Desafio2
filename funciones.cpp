@@ -2,31 +2,13 @@
 
 // ------------- Variables globales ---------------
 
-/*Huesped huespedes[MAX_HUESPEDES];
+Huesped huespedes[MAX_HUESPEDES];
 Anfitrion anfitriones[MAX_ANFITRIONES];
 Alojamiento alojamientos[MAX_ALOJAMIENTOS];
 Reservacion reservaciones[MAX_RESERVAS];
 
-int totalHuespedes = 0, totalAnfitriones = 0, totalAlojamientos = 0, totalReservas = 0;*/
-
+int totalHuespedes = 0, totalAnfitriones = 0, totalAlojamientos = 0, totalReservas = 0;
 int contadorIteraciones = 0;
-
-Huesped* huespedes = new Huesped[10];
-int totalHuespedes = 0;
-int capacidadHuespedes = 10;
-
-Anfitrion* anfitriones = new Anfitrion[10];
-int totalAnfitriones = 0;
-int capacidadAnfitriones = 10;
-
-Alojamiento* alojamientos = new Alojamiento[10];
-int totalAlojamientos = 0;
-int capacidadAlojamientos = 10;
-
-Reservacion* reservaciones = new Reservacion[10];
-int totalReservas = 0;
-int capacidadReservas = 10;
-
 
 // -------------------------- Implementación de las clases --------------------------------
 
@@ -194,6 +176,29 @@ const char* Reservacion::getDocumentoAnfitrion() {
     return (a) ? a->getAnfitrionDocumento() : "desconocido";
 }
 
+bool Reservacion::estaDisponibleR(const char* fechaEntrada, int duracion) const {
+    tm entradaTm = {};
+    if (!convertirFecha(fechaEntrada, entradaTm)) {
+        return false;  // Si no se puede convertir la fecha, no está disponible
+    }
+
+    for (int i = 0; i < 365; ++i) {  // Comprobamos las 365 fechas reservadas
+        if (fechasReservadasReser[i][0] == '\0') continue;  // Si no hay reserva en esa fecha
+
+        tm fechaReserva = {};
+        if (convertirFecha(fechasReservadasReser[i], fechaReserva)) {
+            // Si hay solapamiento de fechas
+            tm fechaFin = fechaReserva;
+            fechaFin.tm_mday += duracion;  // Se suman los días de duración de la reserva
+            if (entradaTm.tm_year == fechaReserva.tm_year && entradaTm.tm_mon == fechaReserva.tm_mon &&
+                entradaTm.tm_mday >= fechaReserva.tm_mday && entradaTm.tm_mday <= fechaFin.tm_mday) {
+                return false;  // Está reservado durante ese periodo
+            }
+        }
+    }
+    return true;
+}
+
 // ------------------- Implementación de las funciones auxiliares --------------------------
 
 Huesped* buscarHuespedPorDocumento(const char* doc) {
@@ -220,63 +225,28 @@ Alojamiento* buscarAlojamientoPorCodigo(int codigo) {
     return nullptr;
 }
 
-void asegurarCapacidadHuespedes() {
-    if (totalHuespedes >= capacidadHuespedes) {
-        capacidadHuespedes *= 2;
-        Huesped* nuevo = new Huesped[capacidadHuespedes];
-        for (int i = 0; i < totalHuespedes; ++i)
-            nuevo[i] = huespedes[i];
-        delete[] huespedes;
-        huespedes = nuevo;
+Reservacion* buscarReservaPorCodigo(int codigo) {
+    for (int i = 0; i < totalReservas; ++i) {
+        contadorIteraciones++;
+        if (reservaciones[i].getCodAlojamiento() == codigo) return &reservaciones[i];
     }
+    return nullptr;
 }
 
-void asegurarCapacidadAnfitriones() {
-    if (totalAnfitriones >= capacidadAnfitriones) {
-        capacidadAnfitriones *= 2;
-        Anfitrion* nuevo = new Anfitrion[capacidadAnfitriones];
-        for (int i = 0; i < totalAnfitriones; ++i)
-            nuevo[i] = anfitriones[i];
-        delete[] anfitriones;
-        anfitriones = nuevo;
+/*Reservacion* buscarReservaPorCodigo(int codigo) {
+    static Reservacion reservaVacia;  // Todos sus campos están vacíos por defecto
+    for (int i = 0; i < totalReservas; ++i) {
+        contadorIteraciones++;
+        if (reservaciones[i].getCodAlojamiento() == codigo) return &reservaciones[i];
     }
-}
+    return &reservaVacia;
+}*/
 
-void asegurarCapacidadAlojamientos() {
-    if (totalAlojamientos >= capacidadAlojamientos) {
-        capacidadAlojamientos *= 2;
-        Alojamiento* nuevo = new Alojamiento[capacidadAlojamientos];
-        for (int i = 0; i < totalAlojamientos; ++i)
-            nuevo[i] = alojamientos[i];
-        delete[] alojamientos;
-        alojamientos = nuevo;
-    }
-}
-
-void asegurarCapacidadReservaciones() {
-    if (totalReservas >= capacidadReservas) {
-        capacidadReservas *= 2;
-        Reservacion* nuevo = new Reservacion[capacidadReservas];
-        for (int i = 0; i < totalReservas; ++i)
-            nuevo[i] = reservaciones[i];
-        delete[] reservaciones;
-        reservaciones = nuevo;
-    }
-}
-
-void liberarMemoria() {
-    delete[] huespedes;
-    delete[] anfitriones;
-    delete[] alojamientos;
-    delete[] reservaciones;
-}
+// ----------------------------- Implementacion funciones principales ----------------------------
 
 bool convertirFecha(const char* fecha, tm& fechaTm) {
     return sscanf(fecha, "%4d-%2d-%2d", &fechaTm.tm_year, &fechaTm.tm_mon, &fechaTm.tm_mday) == 3;
 }
-
-// ----------------------------- Implementacion funciones principales ----------------------------
-
 
 bool alojamientoOcupadoEnFecha(int codAlojamiento, const char* fecha) {
     for (int i = 0; i < totalReservas; ++i) {
@@ -358,6 +328,18 @@ void realizarReservaPorCodigo(const char* documentoHuesped) {
     }
 
     Alojamiento* alojamiento = buscarAlojamientoPorCodigo(codigoAloj);
+    //Reservacion* aloja = buscarReservaPorCodigo(codigoAloj);
+
+    /*if (aloja != nullptr) {
+        // Usar r con seguridad
+        aloja->getDocumentoAnfitrion();
+    }*/
+
+    /*if (!aloja) {
+        std::cout << "Alojamiento Reservado.\n";
+        return;
+    }*/
+
     if (!alojamiento) {
         std::cout << "Codigo de alojamiento no encontrado.\n";
         return;
@@ -369,7 +351,12 @@ void realizarReservaPorCodigo(const char* documentoHuesped) {
     std::cout << "Duracion de la estancia (en dias): ";
     std::cin >> duracion;
 
-    if (!alojamiento->estaDisponible(fecha, duracion)) {
+    /*if (!alojamiento->estaDisponible(fecha, duracion) || !aloja->estaDisponibleR(fecha, duracion)) {
+        std::cout << "El alojamiento no esta disponible en esa fecha.\n";
+        return;
+    }*/
+
+    if (!alojamiento || alojamientoOcupadoEnRango(codigoAloj, fecha, duracion)) {
         std::cout << "El alojamiento no esta disponible en esa fecha.\n";
         return;
     }
@@ -416,6 +403,31 @@ void realizarReservaPorCodigo(const char* documentoHuesped) {
     guardarReservasEnArchivo();
 
     std::cout << "Reserva completada. Monto total: $" << monto << "\n";
+}
+
+bool alojamientoOcupadoEnRango(int codAlojamiento, const char* fechaNueva, int duracionNueva) {
+    tm entradaNueva = {};
+    if (!convertirFecha(fechaNueva, entradaNueva)) return true; // Si no se puede interpretar, consideramos ocupado
+
+    time_t tEntradaNueva = mktime(&entradaNueva);
+    time_t tFinNueva = tEntradaNueva + duracionNueva * 86400; // segundos por día
+
+    for (int i = 0; i < totalReservas; ++i) {
+        if (reservaciones[i].getCodAlojamiento() != codAlojamiento) continue;
+
+        tm entradaExistente = {};
+        if (!convertirFecha(reservaciones[i].getFechaEntrada(), entradaExistente)) continue;
+
+        time_t tEntradaExistente = mktime(&entradaExistente);
+        time_t tFinExistente = tEntradaExistente + reservaciones[i].getDuracion() * 86400;
+
+        // Verificar solapamiento
+        if (tEntradaNueva < tFinExistente && tFinNueva > tEntradaExistente) {
+            return true;  // Hay cruce
+        }
+    }
+
+    return false;  // No hay conflictos
 }
 
 
@@ -478,7 +490,6 @@ void realizarReservaPorFiltros(const char* documentoHuesped) {
     }
 }
 
-
 // Reservas del anfitrion
 
 void verReservasDeAnfitrion(const char* docAnfitrion) {
@@ -500,7 +511,6 @@ void verReservasDeAnfitrion(const char* docAnfitrion) {
     if (!hay) std::cout << "No hay reservas asociadas a sus alojamientos.\n";
 }
 
-
 // Consumo
 
 void mostrarConsumo() {
@@ -509,6 +519,25 @@ void mostrarConsumo() {
                                     sizeof(Alojamiento) * totalAlojamientos + sizeof(Reservacion) * totalReservas
               << " bytes\n";
 }
+
+// Anular reservacion
+
+/*void anularReservacion(int codigo, const char* doc) {
+    for (int i = 0; i < totalReservas; ++i) {
+        contadorIteraciones++;
+        if (reservaciones[i].getCodigo() == codigo) {
+            if (strcmp(reservaciones[i].getDocumentoHuesped(), doc) == 0 ||
+                strcmp(reservaciones[i].getDocumentoAnfitrion(), doc) == 0) {
+                for (int j = i; j < totalReservas - 1; ++j)
+                    reservaciones[j] = reservaciones[j + 1];
+                totalReservas--;
+                std::cout << "Reservacion anulada.\n";
+                return;
+            }
+        }
+    }
+    std::cout << "No se encontro la reservacion o no tiene permiso.\n";
+}*/
 
 void anularReservacion(int codigo, const char* doc) {
     bool encontrada = false;
@@ -571,8 +600,7 @@ void cargarHuespedesDesdeArchivo() {
     int ant;
     float punt;
 
-    while (fscanf(archivo, "%19[^,],%d,%f\n", doc, &ant, &punt) == 3) {
-        asegurarCapacidadHuespedes();
+    while (fscanf(archivo, "%19[^,],%d,%f\n", doc, &ant, &punt) == 3 && totalHuespedes < MAX_HUESPEDES) {
         huespedes[totalHuespedes++] = Huesped(doc, ant, punt);
     }
 
@@ -587,14 +615,12 @@ void cargarAnfitrionesDesdeArchivo() {
     int ant;
     float punt;
 
-    while (fscanf(archivo, "%19[^,],%d,%f\n", doc, &ant, &punt) == 3) {
-        asegurarCapacidadAnfitriones();
+    while (fscanf(archivo, "%19[^,],%d,%f\n", doc, &ant, &punt) == 3 && totalAnfitriones < MAX_ANFITRIONES) {
         anfitriones[totalAnfitriones++] = Anfitrion(doc, ant, punt);
     }
 
     fclose(archivo);
 }
-
 
 void cargarAlojamientosDesdeArchivo() {
     FILE* archivo = fopen("alojamientos.txt", "r");
@@ -602,9 +628,7 @@ void cargarAlojamientosDesdeArchivo() {
 
     char linea[5000];
 
-    while (fgets(linea, sizeof(linea), archivo)) {
-        asegurarCapacidadAlojamientos();
-
+    while (fgets(linea, sizeof(linea), archivo) && totalAlojamientos < MAX_ALOJAMIENTOS) {
         int cod;
         char nombre[100], docAnfitrion[20], departamento[30], municipio[30], tipo[10], direccion[100];
         float precio;
@@ -615,10 +639,16 @@ void cargarAlojamientosDesdeArchivo() {
                             &cod, nombre, docAnfitrion, departamento, municipio, tipo, direccion, &precio,
                             &ascensor, &piscina, &aire, &caja, &parqueadero, &patio, fechasStr);
 
-        if (leidos != 15) continue;
+        if (leidos != 15) {
+            printf("Error en el formato de la linea: %s\n", linea);
+            continue;  // o break, dependiendo de qué tan crítico sea
+        }
 
         Alojamiento& a = alojamientos[totalAlojamientos++];
         a = Alojamiento(cod, nombre, docAnfitrion, departamento, municipio, tipo, direccion, precio);
+
+        // Aquí podrías tener un método setAmenidades si tienes un arreglo interno
+        // a.setAmenidades({ascensor, piscina, aire, caja, parqueadero, patio});
 
         int index = 0;
         char* token = strtok(fechasStr, ";");
@@ -632,6 +662,22 @@ void cargarAlojamientosDesdeArchivo() {
     fclose(archivo);
 }
 
+/*void cargarReservasDesdeArchivo() {
+    FILE* archivo = fopen("reservas.txt", "r");
+    if (!archivo) return;
+
+    int cod, codAloj, dur;
+    float monto;
+    char docH[20], fEntrada[11], metodo[10], fPago[11], notas[MAX_ANOTACIONES];
+
+    while (fscanf(archivo, "%d,%d,%19[^,],%10[^,],%d,%9[^,],%10[^,],%f,%999[^\n]\n",
+                  &cod, &codAloj, docH, fEntrada, &dur, metodo, fPago, &monto, notas) == 9 &&
+           totalReservas < MAX_RESERVAS) {
+        reservaciones[totalReservas++] = Reservacion(cod, codAloj, docH, fEntrada, dur, metodo, fPago, monto, notas);
+    }
+
+    fclose(archivo);
+}*/
 
 void cargarReservasDesdeArchivo() {
     FILE* archivo = fopen("reservas.txt", "r");
@@ -642,18 +688,29 @@ void cargarReservasDesdeArchivo() {
     char docH[20], fEntrada[11], metodo[20], fPago[11], notas[MAX_ANOTACIONES], estado[10];
 
     while (fscanf(archivo, "%d,%d,%19[^,],%10[^,],%d,%19[^,],%10[^,],%f,%199[^,],%9[^\n]\n",
-                  &cod, &codAloj, docH, fEntrada, &dur, metodo, fPago, &monto, notas, estado) == 10) {
-
-        asegurarCapacidadReservaciones();
+                  &cod, &codAloj, docH, fEntrada, &dur, metodo, fPago, &monto, notas, estado) == 10 &&
+           totalReservas < MAX_RESERVAS) {
 
         Reservacion r(cod, codAloj, docH, fEntrada, dur, metodo, fPago, monto, notas);
-        r.setEstado(estado);
+        r.setEstado(estado);  // <--- Guardamos el estado leído
         reservaciones[totalReservas++] = r;
+    }
+
+    char fechasStr[4000];
+
+    Reservacion& a = reservaciones[totalReservas++];
+    a = Reservacion(cod, codAloj, docH, fEntrada, dur, metodo, fPago, monto, notas);
+
+    int index = 0;
+    char* token = strtok(fechasStr, ";");
+    while (token && index < 365) {
+        a.setFechaReservadaR(index, token);
+        token = strtok(nullptr, ";");
+        ++index;
     }
 
     fclose(archivo);
 }
-
 
 // Funciones para escritura
 
@@ -702,13 +759,13 @@ void guardarAlojamientosEnArchivo() {
                 a.getDireccion(),
                 a.getPrecio());
 
-                bool amenidades[6];
-                    for (int j = 0; j < 6; ++j) {
-                        int val;
-                        fscanf(archivo, ",%d", &val);
-                        amenidades[j] = (val != 0);
-                    }
-                //a.setAmenidades(amenities);
+        bool amenidades[6];
+        for (int j = 0; j < 6; ++j) {
+            int val;
+            fscanf(archivo, ",%d", &val);
+            amenidades[j] = (val != 0);
+        }
+        //a.setAmenidades(amenities);
 
 
         // Guardar fechas usando el getter
@@ -727,6 +784,26 @@ void guardarAlojamientosEnArchivo() {
 
     fclose(archivo);
 }
+
+/*void guardarReservasEnArchivo() {
+    FILE* archivo = fopen("reservas.txt", "w");
+    if (!archivo) return;
+
+    for (int i = 0; i < totalReservas; ++i) {
+        fprintf(archivo, "%d,%d,%s,%s,%d,%s,%s,%.2f,%s\n",
+                reservaciones[i].getCodigo(),
+                reservaciones[i].getCodAlojamiento(),
+                reservaciones[i].getDocumentoHuesped(),
+                reservaciones[i].getFechaEntrada(),
+                reservaciones[i].getDuracion(),
+                reservaciones[i].getMetodoPago(),
+                reservaciones[i].getFechaPago(),
+                reservaciones[i].getMonto(),
+                reservaciones[i].getAnotaciones());
+    }
+
+    fclose(archivo);
+}*/
 
 void guardarReservasEnArchivo() {
     FILE* archivo = fopen("reservas.txt", "w");
