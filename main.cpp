@@ -1,5 +1,6 @@
 #include "funciones.h"
-//#include <iostream>
+#include <iostream>
+#include <cstring>
 using namespace std;
 
 int main() {
@@ -12,19 +13,21 @@ int main() {
 
     menuPrincipal();
 
-    // Guardar en archivos
-    //guardarHuespedesEnArchivo();
-    //guardarAnfitrionesEnArchivo();
-    //guardarAlojamientosEnArchivo();
-    //guardarReservasEnArchivo();
+    // Pedir fecha para actualizar histórico
+    char fechaActual[11];
+    tm fechaTm;
 
-    /*char fecha;
+    cout << endl << "Ingrese la fecha actual para actualizar el historico (YYYY-MM-DD): ";
+    cin >> fechaActual;
 
-    cout << endl << "Ingrese la fecha actual para guardar el historico: ";
-    cin >>fecha ;
+    while (!convertirFecha(fechaActual, fechaTm)) {
+        cout << "Formato de fecha inválido. Intente nuevamente (YYYY-MM-DD): ";
+        cin >> fechaActual;
+    }
 
-    actualizarHistorico(fecha);*/
+    actualizarHistorico(fechaActual);
 
     mostrarConsumo();
+
     return 0;
 }

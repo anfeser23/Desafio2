@@ -1,4 +1,6 @@
 #include "funciones.h"
+using namespace std;
+
 
 // ------------- Variables globales ---------------
 
@@ -36,8 +38,6 @@ Anfitrion::Anfitrion(const char* doc, int ant, float punt) : antiguedad(ant), pu
     strncpy(documento, doc, 20);
 }
 
-//const char* Anfitrion::getDocumento() const { return documento; }
-//const char* Anfitrion::getAntiguedad() const { return documento; }
 float Anfitrion::getPuntuacion() const { return puntuacion; }
 
 int Anfitrion::getAntiguedad() const {
@@ -113,20 +113,21 @@ void Alojamiento::agregarReserva(const char* fechaEntrada, int duracion) {
 }
 
 void Alojamiento::mostrarInfo() const {
-    std::cout << "Nombre: " << nombre << std::endl;
-    std::cout << "Codigo: " << codigo << std::endl;
-    std::cout << "Departamento: " << departamento << std::endl;
-    std::cout << "Municipio: " << municipio << std::endl;
-    std::cout << "Tipo: " << tipo << std::endl;
-    std::cout << "Direccion: " << direccion << std::endl;
-    std::cout << "Precio por noche: $" << precio << std::endl;
-    std::cout << "Amenidades: ";
-    std::cout << "Ascensor: " << (amenidades.ascensor ? "Sí" : "No") << ", ";
-    std::cout << "Piscina: " << (amenidades.piscina ? "Sí" : "No") << ", ";
-    std::cout << "Aire acondicionado: " << (amenidades.aireAcondicionado ? "Sí" : "No") << ", ";
-    std::cout << "Caja fuerte: " << (amenidades.cajaFuerte ? "Sí" : "No") << ", ";
-    std::cout << "Parqueadero: " << (amenidades.parqueadero ? "Sí" : "No") << ", ";
-    std::cout << "Patio: " << (amenidades.patio ? "Sí" : "No") << std::endl;
+    cout << endl;
+    cout << endl << "Nombre: " << nombre << endl;
+    cout << endl << "Codigo: " << codigo << endl;
+    cout << endl << "Departamento: " << departamento << endl;
+    cout << endl << "Municipio: " << municipio << endl;
+    cout << endl << "Tipo: " << tipo << endl;
+    cout << endl << "Direccion: " << direccion << endl;
+    cout << endl << "Precio por noche: $" << precio << endl;
+    cout << endl << "Amenidades: ";
+    cout << endl << "Ascensor: " << (amenidades.ascensor ? "Sí" : "No") << ", ";
+    cout << endl << "Piscina: " << (amenidades.piscina ? "Sí" : "No") << ", ";
+    cout << endl << "Aire acondicionado: " << (amenidades.aireAcondicionado ? "Sí" : "No") << ", ";
+    cout << endl << "Caja fuerte: " << (amenidades.cajaFuerte ? "Sí" : "No") << ", ";
+    cout << endl << "Parqueadero: " << (amenidades.parqueadero ? "Sí" : "No") << ", ";
+    cout << endl << "Patio: " << (amenidades.patio ? "Sí" : "No") << endl;
 }
 
 float Alojamiento::getPuntuacionAnfitrion() const {
@@ -176,28 +177,6 @@ const char* Reservacion::getDocumentoAnfitrion() {
     return (a) ? a->getAnfitrionDocumento() : "desconocido";
 }
 
-bool Reservacion::estaDisponibleR(const char* fechaEntrada, int duracion) const {
-    tm entradaTm = {};
-    if (!convertirFecha(fechaEntrada, entradaTm)) {
-        return false;  // Si no se puede convertir la fecha, no está disponible
-    }
-
-    for (int i = 0; i < 365; ++i) {  // Comprobamos las 365 fechas reservadas
-        if (fechasReservadasReser[i][0] == '\0') continue;  // Si no hay reserva en esa fecha
-
-        tm fechaReserva = {};
-        if (convertirFecha(fechasReservadasReser[i], fechaReserva)) {
-            // Si hay solapamiento de fechas
-            tm fechaFin = fechaReserva;
-            fechaFin.tm_mday += duracion;  // Se suman los días de duración de la reserva
-            if (entradaTm.tm_year == fechaReserva.tm_year && entradaTm.tm_mon == fechaReserva.tm_mon &&
-                entradaTm.tm_mday >= fechaReserva.tm_mday && entradaTm.tm_mday <= fechaFin.tm_mday) {
-                return false;  // Está reservado durante ese periodo
-            }
-        }
-    }
-    return true;
-}
 
 // ------------------- Implementación de las funciones auxiliares --------------------------
 
@@ -225,22 +204,6 @@ Alojamiento* buscarAlojamientoPorCodigo(int codigo) {
     return nullptr;
 }
 
-Reservacion* buscarReservaPorCodigo(int codigo) {
-    for (int i = 0; i < totalReservas; ++i) {
-        contadorIteraciones++;
-        if (reservaciones[i].getCodAlojamiento() == codigo) return &reservaciones[i];
-    }
-    return nullptr;
-}
-
-/*Reservacion* buscarReservaPorCodigo(int codigo) {
-    static Reservacion reservaVacia;  // Todos sus campos están vacíos por defecto
-    for (int i = 0; i < totalReservas; ++i) {
-        contadorIteraciones++;
-        if (reservaciones[i].getCodAlojamiento() == codigo) return &reservaciones[i];
-    }
-    return &reservaVacia;
-}*/
 
 // ----------------------------- Implementacion funciones principales ----------------------------
 
@@ -283,25 +246,32 @@ void reservarAlojamientoPorCodigo(int codigo, const char* fechaEntrada, int dura
     int codReserva;
     char metodoPago[10], fechaPago[11], anotaciones[MAX_ANOTACIONES];
 
-    std::cout << "Codigo unico para la reserva: ";
-    std::cin >> codReserva;
+    cout << endl << "Codigo unico para la reserva: ";
+    cin >> codReserva;
 
-    std::cout << "Metodo de pago: ";
-    std::cin >> metodoPago;
+    cout << endl << "Metodo de pago: ";
+    cin >> metodoPago;
 
-    std::cout << "Fecha de pago (YYYY-MM-DD): ";
-    std::cin >> fechaPago;
+    cout << endl << "Fecha de pago (YYYY-MM-DD): ";
+    cin >> fechaPago;
 
-    std::cin.ignore();  // limpiar buffer antes de leer anotaciones
-    std::cout << "Anotaciones: ";
-    std::cin.getline(anotaciones, MAX_ANOTACIONES);
+    cin.ignore();  // limpiar buffer antes de leer anotaciones
+    cout << endl << "Anotaciones: ";
+    cin.getline(anotaciones, MAX_ANOTACIONES);
 
     float monto = aloj->getPrecio() * duracion;
 
-    reservaciones[totalReservas++] = Reservacion(
+    /*reservaciones[totalReservas++] = Reservacion(
+        codReserva, codigo, documentoHuesped, fechaEntrada, duracion,
+        metodoPago, fechaPago, monto, anotaciones
+        );*/
+
+    Reservacion* nuevaReser = new Reservacion (
         codReserva, codigo, documentoHuesped, fechaEntrada, duracion,
         metodoPago, fechaPago, monto, anotaciones
         );
+
+    reservaciones[totalReservas++] = * nuevaReser;
 
     aloj->agregarReserva(fechaEntrada, duracion);
 
@@ -310,90 +280,89 @@ void reservarAlojamientoPorCodigo(int codigo, const char* fechaEntrada, int dura
 
     guardarReservasEnArchivo();
 
-    std::cout << "Reserva realizada con exito. Monto total: $" << monto << "\n";
+    cout << endl << "Reserva realizada con exito. Monto total: $" << monto << "\n";
+
+    delete nuevaReser;
 }
 
 void realizarReservaPorCodigo(const char* documentoHuesped) {
     int codigoAloj, duracion, codReserva;
     char fecha[11], metodoPago[10], fechaPago[11], anotaciones[MAX_ANOTACIONES];
 
-    std::cout << "Ingrese el codigo del alojamiento a reservar: ";
-    std::cin >> codigoAloj;
+    cout << endl << "Ingrese el codigo del alojamiento a reservar: ";
+    cin >> codigoAloj;
 
-    if (std::cin.fail()) {
-        std::cin.clear();
-        std::cin.ignore(1000, '\n');
-        std::cout << "Entrada invalida. Cancelando reserva.\n";
+    if (cin.fail()) {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << endl << "Entrada invalida. Cancelando reserva.\n";
         return;
     }
 
     Alojamiento* alojamiento = buscarAlojamientoPorCodigo(codigoAloj);
-    //Reservacion* aloja = buscarReservaPorCodigo(codigoAloj);
-
-    /*if (aloja != nullptr) {
-        // Usar r con seguridad
-        aloja->getDocumentoAnfitrion();
-    }*/
-
-    /*if (!aloja) {
-        std::cout << "Alojamiento Reservado.\n";
-        return;
-    }*/
 
     if (!alojamiento) {
-        std::cout << "Codigo de alojamiento no encontrado.\n";
+        cout << endl << "Codigo de alojamiento no encontrado.\n";
         return;
     }
 
-    std::cout << "Ingrese la fecha de entrada (YYYY-MM-DD): ";
-    std::cin >> fecha;
+    cout << endl << "Ingrese la fecha de entrada (YYYY-MM-DD): ";
+    cin >> fecha;
 
-    std::cout << "Duracion de la estancia (en dias): ";
-    std::cin >> duracion;
+    cout << endl << "Duracion de la estancia (en dias): ";
+    cin >> duracion;
 
-    /*if (!alojamiento->estaDisponible(fecha, duracion) || !aloja->estaDisponibleR(fecha, duracion)) {
-        std::cout << "El alojamiento no esta disponible en esa fecha.\n";
+    if (!alojamiento->estaDisponible(fecha, duracion)) {
+        cout << endl << "El alojamiento no esta disponible en esa fecha.\n";
         return;
-    }*/
+    }
 
     if (!alojamiento || alojamientoOcupadoEnRango(codigoAloj, fecha, duracion)) {
-        std::cout << "El alojamiento no esta disponible en esa fecha.\n";
+        cout << endl << "El alojamiento no esta disponible en esa fecha.\n";
         return;
     }
 
     // Validación de código único
     while (true) {
-        std::cout << "Codigo unico para la reserva: ";
-        std::cin >> codReserva;
+        cout << endl << "Codigo unico para la reserva: ";
+        cin >> codReserva;
 
-        if (std::cin.fail()) {
-            std::cin.clear();
-            std::cin.ignore(1000, '\n');
-            std::cout << "Codigo invalido. Intente de nuevo.\n";
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << endl << "Codigo invalido. Intente de nuevo.\n";
             continue;
         }
 
         if (!codigoReservaExiste(codReserva)) break;
-        std::cout << "Ese codigo ya existe. Ingrese otro.\n";
+        cout << endl << "Ese codigo ya existe. Ingrese otro.\n";
     }
 
-    std::cout << "Metodo de pago: ";
-    std::cin >> metodoPago;
+    cout << endl << "Metodo de pago: ";
+    cin >> metodoPago;
 
-    std::cout << "Fecha de pago (YYYY-MM-DD): ";
-    std::cin >> fechaPago;
+    cout << endl << "Fecha de pago (YYYY-MM-DD): ";
+    cin >> fechaPago;
 
-    std::cin.ignore(); // Limpia el buffer antes de getline
-    std::cout << "Anotaciones: ";
-    std::cin.getline(anotaciones, MAX_ANOTACIONES);
+    cin.ignore(); // Limpia el buffer antes de getline
+    cout << endl << "Anotaciones: ";
+    cin.getline(anotaciones, MAX_ANOTACIONES);
 
     float monto = alojamiento->getPrecio() * duracion;
 
-    reservaciones[totalReservas++] = Reservacion(
+    /*reservaciones[totalReservas++] = Reservacion(
+        codReserva, codigoAloj, documentoHuesped,
+        fecha, duracion, metodoPago, fechaPago,
+        monto, anotaciones
+        );*/
+
+    Reservacion* nuevaReserva = new Reservacion (
         codReserva, codigoAloj, documentoHuesped,
         fecha, duracion, metodoPago, fechaPago,
         monto, anotaciones
         );
+
+    reservaciones[totalReservas++] = *nuevaReserva;
 
     alojamiento->agregarReserva(fecha, duracion);
 
@@ -402,7 +371,9 @@ void realizarReservaPorCodigo(const char* documentoHuesped) {
 
     guardarReservasEnArchivo();
 
-    std::cout << "Reserva completada. Monto total: $" << monto << "\n";
+    cout << endl << "Reserva completada. Monto total: $" << monto << "\n";
+
+    delete nuevaReserva;
 }
 
 bool alojamientoOcupadoEnRango(int codAlojamiento, const char* fechaNueva, int duracionNueva) {
@@ -450,7 +421,7 @@ void buscarAlojamientosPorFiltros(const char* fechaEntrada, const char* municipi
     }
 
     if (!encontrado) {
-        std::cout << "No se encontraron alojamientos disponibles con esos filtros.\n";
+        cout << endl << "No se encontraron alojamientos disponibles con esos filtros.\n";
     }
 }
 
@@ -460,30 +431,30 @@ void realizarReservaPorFiltros(const char* documentoHuesped) {
     int duracion;
     float precioMaximo = -1;
 
-    std::cout << "Fecha deseada (YYYY-MM-DD): ";
-    std::cin >> fechaDeseada;
+    cout << endl << "Fecha deseada (YYYY-MM-DD): ";
+    cin >> fechaDeseada;
 
-    std::cout << "Municipio: ";
-    std::cin >> municipio;
+    cout << endl << "Municipio: ";
+    cin >> municipio;
 
-    std::cout << "Duracion de la estancia (en dias): ";
-    std::cin >> duracion;
+    cout << endl << "Duracion de la estancia (en dias): ";
+    cin >> duracion;
 
     char deseaFiltrar;
-    std::cout << "¿Desea filtrar por precio maximo? (s/n): ";
-    std::cin >> deseaFiltrar;
+    cout << endl << "¿Desea filtrar por precio maximo? (s/n): ";
+    cin >> deseaFiltrar;
 
     if (deseaFiltrar == 's' || deseaFiltrar == 'S') {
-        std::cout << "Precio maximo por noche: ";
-        std::cin >> precioMaximo;
+        cout << endl << "Precio maximo por noche: ";
+        cin >> precioMaximo;
     }
 
-    std::cout << "\nAlojamientos disponibles:\n";
+    cout << endl << "\nAlojamientos disponibles:\n";
     buscarAlojamientosPorFiltros(fechaDeseada, municipio, duracion, precioMaximo);
 
     int codigo;
-    std::cout << "Ingrese el codigo del alojamiento que desea reservar (0 para cancelar): ";
-    std::cin >> codigo;
+    cout << endl << "Ingrese el codigo del alojamiento que desea reservar (0 para cancelar): ";
+    cin >> codigo;
 
     if (codigo != 0) {
         reservarAlojamientoPorCodigo(codigo, fechaDeseada, duracion, documentoHuesped);
@@ -498,13 +469,13 @@ void verReservasDeAnfitrion(const char* docAnfitrion) {
         Alojamiento* a = buscarAlojamientoPorCodigo(reservaciones[i].getCodAlojamiento());
         if (a && strcmp(a->getAnfitrionDocumento(), docAnfitrion) == 0) {
             hay = true;
-            std::cout << "\n--- Reserva " << reservaciones[i].getCodigo() << " ---\n";
-            std::cout << "Huesped: " << reservaciones[i].getDocumentoHuesped() << "\n";
-            std::cout << "Alojamiento: " << reservaciones[i].getCodAlojamiento() << "\n";
-            std::cout << "Fecha entrada: " << reservaciones[i].getFechaEntrada() << "\n";
-            std::cout << "Duracion: " << reservaciones[i].getDuracion() << " dias\n";
-            std::cout << "Pago: $" << reservaciones[i].getMonto() << " - Metodo: " << reservaciones[i].getMetodoPago() << "\n";
-            std::cout << "Notas: " << reservaciones[i].getAnotaciones() << "\n";
+            cout << endl << "\n--- Reserva " << reservaciones[i].getCodigo() << " ---\n";
+            cout << endl << "Huesped: " << reservaciones[i].getDocumentoHuesped() << "\n";
+            cout << endl << "Alojamiento: " << reservaciones[i].getCodAlojamiento() << "\n";
+            cout << endl << "Fecha entrada: " << reservaciones[i].getFechaEntrada() << "\n";
+            cout << endl << "Duracion: " << reservaciones[i].getDuracion() << " dias\n";
+            cout << endl << "Pago: $" << reservaciones[i].getMonto() << " - Metodo: " << reservaciones[i].getMetodoPago() << "\n";
+            cout << endl << "Notas: " << reservaciones[i].getAnotaciones() << "\n";
         }
     }
 
@@ -514,30 +485,13 @@ void verReservasDeAnfitrion(const char* docAnfitrion) {
 // Consumo
 
 void mostrarConsumo() {
-    std::cout << "Iteraciones: " << contadorIteraciones << "\n";
-    std::cout << "Memoria: " << sizeof(Huesped) * totalHuespedes + sizeof(Anfitrion) * totalAnfitriones +
-                                    sizeof(Alojamiento) * totalAlojamientos + sizeof(Reservacion) * totalReservas
-              << " bytes\n";
+    cout << endl << "Iteraciones: " << contadorIteraciones << "\n";
+    cout << endl << "Memoria: " << sizeof(Huesped) * totalHuespedes + sizeof(Anfitrion) * totalAnfitriones +
+                               sizeof(Alojamiento) * totalAlojamientos + sizeof(Reservacion) * totalReservas
+         << " bytes\n";
 }
 
-// Anular reservacion
-
-/*void anularReservacion(int codigo, const char* doc) {
-    for (int i = 0; i < totalReservas; ++i) {
-        contadorIteraciones++;
-        if (reservaciones[i].getCodigo() == codigo) {
-            if (strcmp(reservaciones[i].getDocumentoHuesped(), doc) == 0 ||
-                strcmp(reservaciones[i].getDocumentoAnfitrion(), doc) == 0) {
-                for (int j = i; j < totalReservas - 1; ++j)
-                    reservaciones[j] = reservaciones[j + 1];
-                totalReservas--;
-                std::cout << "Reservacion anulada.\n";
-                return;
-            }
-        }
-    }
-    std::cout << "No se encontro la reservacion o no tiene permiso.\n";
-}*/
+// Anular reservación
 
 void anularReservacion(int codigo, const char* doc) {
     bool encontrada = false;
@@ -555,10 +509,10 @@ void anularReservacion(int codigo, const char* doc) {
     }
 
     if (encontrada) {
-        std::cout << "Reservacion marcada como anulada.\n";
+        cout << endl << "Reservacion marcada como anulada.\n";
         guardarReservasEnArchivo();  // actualiza el archivo con el nuevo estado
     } else {
-        std::cout << "No se encontro la reservacion o no tiene permiso.\n";
+        cout << endl << "No se encontro la reservacion o no tiene permiso.\n";
     }
 }
 
@@ -569,7 +523,7 @@ void actualizarHistorico(const char* hoy) {
     for (int i = 0; i < totalReservas;) {
         contadorIteraciones++;
         if (fechaEsAnterior(reservaciones[i].getFechaEntrada(), hoy)) {
-            fprintf(archivo, "%d|%d|%s|%s|%d|%s|%s|%.2f|%s\n",
+            fprintf(archivo, "%d,%d,%s,%s,%d,%s,%s,%.2f,%s\n",
                     reservaciones[i].getCodigo(),
                     reservaciones[i].getCodAlojamiento(),
                     reservaciones[i].getDocumentoHuesped(),
@@ -587,7 +541,7 @@ void actualizarHistorico(const char* hoy) {
         }
     }
     fclose(archivo);
-    std::cout << "Historico actualizado.\n";
+    cout << endl << "Historico actualizado.\n";
 }
 
 // Funciones para carga
@@ -662,23 +616,6 @@ void cargarAlojamientosDesdeArchivo() {
     fclose(archivo);
 }
 
-/*void cargarReservasDesdeArchivo() {
-    FILE* archivo = fopen("reservas.txt", "r");
-    if (!archivo) return;
-
-    int cod, codAloj, dur;
-    float monto;
-    char docH[20], fEntrada[11], metodo[10], fPago[11], notas[MAX_ANOTACIONES];
-
-    while (fscanf(archivo, "%d,%d,%19[^,],%10[^,],%d,%9[^,],%10[^,],%f,%999[^\n]\n",
-                  &cod, &codAloj, docH, fEntrada, &dur, metodo, fPago, &monto, notas) == 9 &&
-           totalReservas < MAX_RESERVAS) {
-        reservaciones[totalReservas++] = Reservacion(cod, codAloj, docH, fEntrada, dur, metodo, fPago, monto, notas);
-    }
-
-    fclose(archivo);
-}*/
-
 void cargarReservasDesdeArchivo() {
     FILE* archivo = fopen("reservas.txt", "r");
     if (!archivo) return;
@@ -713,97 +650,6 @@ void cargarReservasDesdeArchivo() {
 }
 
 // Funciones para escritura
-
-void guardarHuespedesEnArchivo() {
-    FILE* archivo = fopen("huespedes.txt", "w");
-    if (!archivo) return;
-
-    for (int i = 0; i < totalHuespedes; ++i) {
-        fprintf(archivo, "%s,%d,%.2f\n",
-                huespedes[i].getDocumento(),
-                huespedes[i].getAntiguedad(),
-                huespedes[i].getPuntuacion());
-    }
-
-    fclose(archivo);
-}
-
-void guardarAnfitrionesEnArchivo() {
-    FILE* archivo = fopen("anfitriones.txt", "w");
-    if (!archivo) return;
-
-    for (int i = 0; i < totalAnfitriones; ++i) {
-        fprintf(archivo, "%s,%d,%.2f\n",
-                anfitriones[i].getDocumento(),
-                anfitriones[i].getAntiguedad(),
-                anfitriones[i].getPuntuacion());
-    }
-
-    fclose(archivo);
-}
-
-void guardarAlojamientosEnArchivo() {
-    FILE* archivo = fopen("alojamientos.txt", "w");
-    if (!archivo) return;
-
-    for (int i = 0; i < totalAlojamientos; ++i) {
-        Alojamiento& a = alojamientos[i];
-
-        fprintf(archivo, "%d,%s,%s,%s,%s,%s,%s,%.2f,%d,%d,%d,%d,%d,%d,",
-                a.getCodigo(),
-                a.getNombre(),
-                a.getAnfitrionDocumento(),
-                a.getDepartamento(),
-                a.getMunicipio(),
-                a.getTipo(),
-                a.getDireccion(),
-                a.getPrecio());
-
-        bool amenidades[6];
-        for (int j = 0; j < 6; ++j) {
-            int val;
-            fscanf(archivo, ",%d", &val);
-            amenidades[j] = (val != 0);
-        }
-        //a.setAmenidades(amenities);
-
-
-        // Guardar fechas usando el getter
-        bool first = true;
-        for (int j = 0; j < 365; ++j) {
-            if (a.getFechaReservada(j)[0] != '\0') {
-                if (!first) fprintf(archivo, ";");
-                fprintf(archivo, "%s", a.getFechaReservada(j));
-                first = false;
-            }
-        }
-
-
-        fprintf(archivo, "\n");
-    }
-
-    fclose(archivo);
-}
-
-/*void guardarReservasEnArchivo() {
-    FILE* archivo = fopen("reservas.txt", "w");
-    if (!archivo) return;
-
-    for (int i = 0; i < totalReservas; ++i) {
-        fprintf(archivo, "%d,%d,%s,%s,%d,%s,%s,%.2f,%s\n",
-                reservaciones[i].getCodigo(),
-                reservaciones[i].getCodAlojamiento(),
-                reservaciones[i].getDocumentoHuesped(),
-                reservaciones[i].getFechaEntrada(),
-                reservaciones[i].getDuracion(),
-                reservaciones[i].getMetodoPago(),
-                reservaciones[i].getFechaPago(),
-                reservaciones[i].getMonto(),
-                reservaciones[i].getAnotaciones());
-    }
-
-    fclose(archivo);
-}*/
 
 void guardarReservasEnArchivo() {
     FILE* archivo = fopen("reservas.txt", "w");
@@ -844,28 +690,30 @@ void menuPrincipal() {
     int opcion;
 
     do {
-        std::cout << "\n--- UdeAStay ---\n";
-        std::cout << "1. Ingresar como huesped\n";
-        std::cout << "2. Ingresar como anfitrion\n";
-        std::cout << "3. Salir\nOpcion: ";
-        std::cin >> opcion;
+        cout << endl;
+        cout << endl << "\n---------------- UdeAStay --------------------\n" << endl;
+        cout << endl << "1. Ingresar como huesped\n";
+        cout << endl << "2. Ingresar como anfitrion\n";
+        cout << endl << "3. Salir\n" << endl;
+        cout << endl << "Opcion: ";
+        cin >> opcion;
 
         switch (opcion) {
         case 1:
-            std::cout << "Documento del huesped: ";
-            std::cin >> documento;
+            cout << endl << "Documento del huesped: ";
+            cin >> documento;
             if (buscarHuespedPorDocumento(documento)) {
-                std::cout << "Bienvenido huesped.\n";
+                cout << endl << "Bienvenido huesped.\n";
                 menuHuesped(documento);
-            } else std::cout << "No encontrado.\n";
+            } else cout << endl << "No encontrado.\n";
             break;
         case 2:
-            std::cout << "Documento del anfitrion: ";
-            std::cin >> documento;
+            cout << endl << "Documento del anfitrion: ";
+            cin >> documento;
             if (buscarAnfitrionPorDocumento(documento)) {
-                std::cout << "Bienvenido anfitrion.\n";
+                cout << endl << "Bienvenido anfitrion.\n";
                 menuAnfitrion(documento);  // llamada aquí
-            } else std::cout << "No encontrado.\n";
+            } else cout << endl << "No encontrado.\n";
             break;
         }
     } while (opcion != 3);
@@ -874,12 +722,14 @@ void menuPrincipal() {
 void menuAnfitrion(const char* documento) {
     int op;
     do {
-        std::cout << "\n--- Menu Anfitrion ---\n";
-        std::cout << "1. Ver reservas en mis alojamientos\n";
-        std::cout << "2. Anular una reserva\n";
-        std::cout << "3. Consultar consumo\n";
-        std::cout << "4. Volver al menu principal\nOpcion: ";
-        std::cin >> op;
+        cout << endl;
+        cout << endl << "\n--- Menu Anfitrion ---\n" << endl;
+        cout << endl << "1. Ver reservas en mis alojamientos\n";
+        cout << endl << "2. Anular una reserva\n";
+        cout << endl << "3. Consultar consumo\n";
+        cout << endl << "4. Volver al menu principal\n" << endl;
+        cout << endl << "Opcion: ";
+        cin >> op;
 
         switch (op) {
         case 1:
@@ -887,8 +737,8 @@ void menuAnfitrion(const char* documento) {
             break;
         case 2: {
             int codigo;
-            std::cout << "Codigo de la reserva a anular: ";
-            std::cin >> codigo;
+            cout << endl << "Codigo de la reserva a anular: ";
+            cin >> codigo;
             anularReservacion(codigo, documento);  // usa documento del anfitrión
             break;
         }
@@ -902,13 +752,15 @@ void menuAnfitrion(const char* documento) {
 void menuHuesped(const char* documento) {
     int op;
     do {
-        std::cout << "\n--- Menu Huesped ---\n";
-        std::cout << "1. Realizar una reserva por filtros\n";
-        std::cout << "2. Realizar una reserva por codigo\n";
-        std::cout << "3. Anular una reserva\n";
-        std::cout << "4. Consultar consumo\n";
-        std::cout << "5. Volver al menu principal\nOpcion: ";
-        std::cin >> op;
+        cout << endl;
+        cout << endl << "\n--- Menu Huesped ---\n" << endl;
+        cout << endl << "1. Realizar una reserva por filtros\n";
+        cout << endl << "2. Realizar una reserva por codigo\n";
+        cout << endl << "3. Anular una reserva\n";
+        cout << endl << "4. Consultar consumo\n";
+        cout << endl << "5. Volver al menu principal\n" <<  endl;
+        cout << endl << "Opcion: ";
+        cin >> op;
 
         switch (op) {
         case 1:
@@ -919,8 +771,8 @@ void menuHuesped(const char* documento) {
             break;
         case 3: {
             int codigo;
-            std::cout << "Codigo de la reserva a anular: ";
-            std::cin >> codigo;
+            cout << endl << "Codigo de la reserva a anular: ";
+            cin >> codigo;
             anularReservacion(codigo, documento);
             break;
         }
