@@ -204,9 +204,6 @@ Alojamiento* buscarAlojamientoPorCodigo(int codigo) {
     return nullptr;
 }
 
-
-// ----------------------------- Implementacion funciones principales ----------------------------
-
 bool convertirFecha(const char* fecha, tm& fechaTm) {
     return sscanf(fecha, "%4d-%2d-%2d", &fechaTm.tm_year, &fechaTm.tm_mon, &fechaTm.tm_mday) == 3;
 }
@@ -233,6 +230,11 @@ bool codigoReservaExiste(int codigo) {
 bool fechaEsAnterior(const char* f1, const char* f2) {
     return strcmp(f1, f2) < 0;
 }
+
+
+// ----------------------------- Implementacion funciones principales ----------------------------
+
+
 
 // Reserva por codigo
 
@@ -520,6 +522,11 @@ void anularReservacion(int codigo, const char* doc) {
 
 void actualizarHistorico(const char* hoy) {
     FILE* archivo = fopen("historico_reservas.txt", "a");
+    if (!archivo) {
+        std::cerr << "Error: no se pudo abrir el archivo 'historico_reservas.txt'." << std::endl;
+        return;
+    }
+
     for (int i = 0; i < totalReservas;) {
         contadorIteraciones++;
         if (fechaEsAnterior(reservaciones[i].getFechaEntrada(), hoy)) {
@@ -540,9 +547,11 @@ void actualizarHistorico(const char* hoy) {
             i++;
         }
     }
+
     fclose(archivo);
-    cout << endl << "Historico actualizado.\n";
+    std::cout << "\nHistorico actualizado.\n";
 }
+
 
 // Funciones para carga
 
